@@ -1,0 +1,46 @@
+﻿@page
+@using Pizza.Models
+@model Pizza.Pages.Order.DetailModel
+
+@{
+    ViewData["Title"] = "Detail";
+}
+
+<div>
+    <h2>@(Model.IsNew.GetValueOrDefault(false) ? "Danke für Ihre Bestellung" : "Ihre Bestellung")</h2>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Order.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Order.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Order.Date)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Order.Date)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Order.State)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Order.State)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Order.Customer.UserName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Order.Customer.UserName)
+        </dd>
+    </dl>
+</div>
+
+<div>
+    @if (Model.Order.State == OrderState.New)
+    {
+        <a asp-page="Detail" asp-page-handler="Delete" asp-route-id="@Model.Order.Id" class="btn btn-danger">Delete</a>
+    }
+    <a asp-page="Add"class="btn btn-primary">Neue Bestellung</a>
+    <a asp-page="Detail" asp-route-id="@Model.Order.Id" class="btn btn-secondary">Bestellung anzeigen</a>
+</div>

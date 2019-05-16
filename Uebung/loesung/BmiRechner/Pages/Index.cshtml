@@ -1,0 +1,27 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<form asp-page="Bmi" data-ajax="true" data-ajax-method="GET" data-ajax-mode="replace" data-ajax-update="#result">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label asp-for="@Model.Bmi.Height"></label>
+            <input asp-for="@Model.Bmi.Height" name="height" class="form-control">
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="@Model.Bmi.Weight"></label>
+            <input asp-for="@Model.Bmi.Weight" name="weight" class="form-control"/>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<div id="result"></div>
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.6/dist/jquery.unobtrusive-ajax.min.js"
+            integrity="sha256-PAC000yuHt78nszJ2RO0OiDMu/uLzPLRlYTk8J3AO10="
+            crossorigin="anonymous"></script>
+}

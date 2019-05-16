@@ -1,0 +1,41 @@
+﻿@page
+@using Pizza.Utilities
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <img src="images/pizza.jpg"/>
+    <div>
+        <a asp-page="Order/Add" class="btn btn-primary">Neue Bestellung</a>
+    </div>
+</div>
+
+@{
+    if (User.IsAdmin())
+    {
+        <h1>Alle Bestellungen</h1>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Besteller</th>
+                <th>Pizza</th>
+                <th>State</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var x in Model.Orders)
+            {
+                <tr>
+                    <td><a asp-page="Order/Detail" asp-route-Id="@x.Id">@x.Id</a></td>
+                    <td>@x.Customer.UserName</td>
+                    <td>@x.Name</td>
+                    <td>@x.State</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+}

@@ -1,0 +1,51 @@
+﻿@page
+@model BmiRechner.Pages.BmiModel
+@{
+    ViewData["Title"] = "Bmi";
+    Layout = null;
+}
+@if (Model.WrongData)
+{
+    <strong>Falsche Daten!</strong> 
+}
+else
+{
+    double value = Model.BmiValue;
+
+    var data = new[]
+    {
+        new {Text = "starkes Untergewicht", Max = 16.0},
+        new {Text = "mäßiges Untergewicht", Max = 17.0},
+        new {Text = "leichtes Untergewicht", Max = 18.5},
+        new {Text = "Normalgewicht", Max = 25.0},
+        new {Text = "Präadipositas", Max = 30.0},
+        new {Text = "Adipositas Grad I", Max = 35.0},
+        new {Text = "Adipositas Grad II", Max = 40.0},
+        new {Text = "Adipositas Grad III", Max = 999.0},
+    };
+    
+    
+    <table class="table">
+        <caption>Ihr BMI: <span class="badge badge-primary">@value</span></caption>
+        <thead>
+        <tr>
+            <th>Beschreibung</th>
+            <th>Von</th>
+            <th>Bis </th>
+        </tr>
+        </thead>
+
+        @{
+            double old = 0;
+            foreach (var entry in data)
+            {
+                <tr class="@(value > old && value <= entry.Max ? "active" : "")">
+                    <td>@entry.Text</td>
+                    <td>@old</td>
+                    <td>@entry.Max</td>
+                </tr>
+                old = entry.Max;
+            }
+        }
+    </table>
+}

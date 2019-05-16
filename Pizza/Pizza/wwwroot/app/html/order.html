@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Bestellung</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<body>
+
+    <div id="orderContainer"></div>
+
+    <script id="order-template" type="text/x-handlebars-template">
+        <dl>
+            <dt>ID</dt>
+            <dd>
+                {{id}}
+            </dd>
+            <dt>Pizza-Name</dt>
+            <dd>
+                {{name}}
+            </dd>
+            <dt>State</dt>
+            <dd>
+                {{state}}
+            </dd>
+        </dl>
+
+        {{#ifCond  state '===' 'New'}}
+            <button  data-id="{{id}}" class="js-delete btn btn-default" >Löschen</button>
+        {{/ifCond}}
+        <a href="index.html" class="btn btn-default">Zurück</a>
+    </script>
+
+
+
+    <script src="../js/libs/jquery-2.1.4.min.js"></script>
+    <script src="../js/utils/ajaxUtil.js"></script>
+    <script src="../js/services/valueStorage.js"></script>
+    <script src="../js/services/restClient.js"></script>
+    <script src="../js/controllers/orderController.js"></script>
+    <script src="../js/libs/handlebars-v4.0.5.js"></script>
+    <script src="../js/utils/handlebarsHelpers.js"></script>
+</body>
+</html>
