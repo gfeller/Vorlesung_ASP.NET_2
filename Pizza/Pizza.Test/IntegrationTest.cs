@@ -132,7 +132,8 @@ namespace Pizza.Test
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.UseEnvironment("TEST");
-            builder.ConfigureServices(x => x.AddMvc().AddRazorPagesOptions(o => o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute())));
+            builder.ConfigureServices(x => x.AddMvc()
+                .AddRazorPagesOptions(o => o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute())));
             base.ConfigureWebHost(builder);
         }
 
