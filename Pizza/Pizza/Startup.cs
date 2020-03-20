@@ -12,13 +12,15 @@ using Microsoft.EntityFrameworkCore;
 using Pizza.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Pizza.Services;
 using Pizza.Utilities;
 using Pizza_Demo.Exceptions;
 using Swashbuckle.AspNetCore.Filters;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Hosting;
+
 
 namespace Pizza
 {
@@ -53,19 +55,21 @@ namespace Pizza
             services.AddTransient<SecurityService>();
             services.AddTransient<DataService>();
 
-            services.AddMvc(options => { options.Filters.Add(new ValidateModelAttribute()); })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services
+                .AddMvc(options => { options.Filters.Add(new ValidateModelAttribute()); })
+                .AddApplicationPart(typeof(Startup).Assembly);
+
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             ConfigureDev(app, env);
+            
             app.UseExceptionHandler(ConfigureExceptionHandler);
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseAuthentication();
-
+            
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
@@ -74,8 +78,16 @@ namespace Pizza
 
 
             app.UseSession(new SessionOptions() { IdleTimeout = TimeSpan.FromMinutes(30) });
-            app.UseMvc();
-        
+            app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapRazorPages();
+            });
         }
 
 
@@ -84,24 +96,24 @@ namespace Pizza
             services.AddSwaggerGen(options =>
             {
                 // need a fix for the new swagger version
-                options.AddSecurityDefinition("JWT Token", new ApiKeyScheme
+                options.AddSecurityDefinition("JWT Token", new OpenApiSecurityScheme()
                 {
                     Description = "Please enter into field the word 'Bearer' following by space and JWT",
                     Name = "Authorization",
-                    In = "header",
-                    Type = "apiKey"
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey
                 });
 
                 options.OperationFilter<SecurityRequirementsOperationFilter>();
  
-                options.SwaggerDoc("v1", new Info()
+                options.SwaggerDoc("v1", new OpenApiInfo()
                 {
                     Version = "v1",
-                    Contact = new Contact()
+                    Contact = new OpenApiContact()
                     {
                         Email = "mgfeller@hsr.ch",
                         Name = "Michael Gfeller",
-                        Url = "https://github.com/gfeller"
+                        Url = new Uri("https://github.com/gfeller")
                     },
                     Description = "Pizza Service API",
                     Title = "Pizza Service",
@@ -166,12 +178,11 @@ namespace Pizza
             });
         }
 
-        private void ConfigureDev(IApplicationBuilder app, IHostingEnvironment env)
+        private void ConfigureDev(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                app.UseDeveloperExceptionPage();                
 
                 using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 {

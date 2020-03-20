@@ -36,7 +36,7 @@ namespace Pizza.Test
             var wrongOrder = JsonConvert.SerializeObject(new NewOrderViewModel() {Name = "X"});
             var okOrder = JsonConvert.SerializeObject(new NewOrderViewModel() {Name = "Hawaii"});
 
-            var result = await _sut.Request("/api/orders", null, HttpMethod.Post, new StringContent(wrongOrder, Encoding.UTF8, "application/json"));
+            var result = await _sut.Request("api/orders", null, HttpMethod.Post, new StringContent(wrongOrder, Encoding.UTF8, "application/json"));
             Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
 
             var result2 = await _sut.Request("/api/orders", _sut.Admin, HttpMethod.Post, new StringContent(wrongOrder, Encoding.UTF8, "application/json"));
@@ -134,13 +134,15 @@ namespace Pizza.Test
             builder.UseEnvironment("TEST");
             builder.ConfigureServices(x => x.AddMvc()
                 .AddRazorPagesOptions(o => o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute())));
+
+            builder.UseStartup<TestStartup>();
             base.ConfigureWebHost(builder);
         }
 
         protected override IWebHostBuilder CreateWebHostBuilder()
         {
             return WebHost.CreateDefaultBuilder()
-                .UseStartup<TestStartup>();
+                ;
         }
     }
 }
