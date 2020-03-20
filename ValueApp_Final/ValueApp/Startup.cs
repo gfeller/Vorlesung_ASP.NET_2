@@ -1,18 +1,17 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Text.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
-using Newtonsoft.Json;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.OpenApi.Models;
 using ValueApp.Exceptions;
 using ValueApp.Services;
 
@@ -36,17 +35,16 @@ namespace ValueApp
 
             services.AddSwaggerGen(options =>
             {
-                options.IncludeXmlComments(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "ValueApp.xml"));
-                options.SwaggerDoc("v1", new Info()
+                // options.IncludeXmlComments(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "ValueApp.xml"));
+                options.SwaggerDoc("v1", new OpenApiInfo()
                 {
                     Version = "v1",
-                    Contact = new Contact() {Email = "mgfeller@hsr.ch", Name = "Michael Gfeller", Url = "https://github.com/gfeller"},
+                    Contact = new OpenApiContact() {Email = "mgfeller@hsr.ch", Name = "Michael Gfeller", Url = new Uri("https://github.com/gfeller")},
                     Description = "Das ist eine Demo",
                     Title = "Value Service"
                 });
             });
-
-            services.AddMvc(options => { options.Filters.Add(new ValidateModelAttribute()); }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddControllers(options => { options.Filters.Add(new ValidateModelAttribute()); });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,13 +61,16 @@ namespace ValueApp
             }
 
             app.UseHttpsRedirection();
-
-
             app.UseExceptionHandler(ConfigureErrorHandler);
 
             app.UseSwagger();
             app.UseSwaggerUI(options => { options.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"); });
-            app.UseMvc();
+
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
 
         private void ConfigureErrorHandler(IApplicationBuilder errorApp)
@@ -91,7 +92,7 @@ namespace ValueApp
                 };
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = exception != null ? (int) exception.Type : (int) HttpStatusCode.InternalServerError;
-                await context.Response.WriteAsync(JsonConvert.SerializeObject(metadata));
+                await context.Response.WriteAsync(JsonSerializer.Serialize(metadata));
             });
         }
     }

@@ -8,15 +8,15 @@ namespace ValueApp.Services
 {
     public class ValueService : IValueService
     {
-        private static int _idCounter = 1;
+        private static int _idCounter = 0;
         private static List<Value> Values { get; set; } = new List<Value>();
         
         public ValueService()
         {
+            Add(new Value() { Content = "0" });
             Add(new Value() { Content = "1" });
             Add(new Value() { Content = "2" });
             Add(new Value() { Content = "3" });
-            Add(new Value() { Content = "4" });
         }
 
         public IEnumerable<Value> All()
@@ -40,7 +40,7 @@ namespace ValueApp.Services
         public Value Change(int id, Value value)
         {
             EnsureValue(id);
-
+            
             Values[id] = value;
             value.Id = id;
             return Values[id];
