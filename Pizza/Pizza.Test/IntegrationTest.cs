@@ -18,6 +18,7 @@ using Pizza.Models;
 using Pizza.Services;
 using Pizza.ViewModels;
 using Xunit;
+using System;
 
 namespace Pizza.Test
 {
@@ -116,6 +117,9 @@ namespace Pizza.Test
 
     public class TestStartup : Startup
     {
+        private readonly string _dbId = Guid.NewGuid().ToString(); // WHY?
+
+
         public TestStartup(IConfiguration config) : base(config)
         {
         }
@@ -123,7 +127,7 @@ namespace Pizza.Test
         public override void ConfigureDatabase(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseInMemoryDatabase("TEST"));
+                options.UseInMemoryDatabase(_dbId));
         }
     }
 
@@ -141,8 +145,7 @@ namespace Pizza.Test
 
         protected override IWebHostBuilder CreateWebHostBuilder()
         {
-            return WebHost.CreateDefaultBuilder()
-                ;
+            return WebHost.CreateDefaultBuilder();
         }
     }
 }
