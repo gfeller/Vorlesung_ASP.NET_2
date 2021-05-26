@@ -13,7 +13,7 @@ namespace ValueApp.Controllers
     public class ValuesController : Controller
     {
         private readonly IValueService _valueService;
-        private IUrlHelper _uriHelper;
+        private readonly IUrlHelper _uriHelper;
 
         public ValuesController(IActionContextAccessor actionContextAccessor, IUrlHelperFactory helper, IValueService valueService)
         {
@@ -38,15 +38,15 @@ namespace ValueApp.Controllers
         {
             return _valueService.Get(id);
         }
-        
+
         [ProducesResponseType(typeof(Value), 200)]
         [HttpPost]
-        public IActionResult Post([FromBody]NewValueViewModel newValue)
+        public IActionResult Post([FromBody] NewValueViewModel newValue)
         {
-           Value value = _valueService.Add(new Value() {Content = newValue.Content});
+            Value value = _valueService.Add(new Value() {Content = newValue.Content});
             value.AddSelfLink(_uriHelper, "get", "Values");
-            value.AddLink(_uriHelper, "delete", "Values", "del", new { id = value.Id });
-            return new CreatedAtActionResult("Get", "Values", new { id = value.Id }, value);
+            value.AddLink(_uriHelper, "delete", "Values", "del", new {id = value.Id});
+            return new CreatedAtActionResult("Get", "Values", new {id = value.Id}, value);
         }
 
         [HttpPut("{id}")]

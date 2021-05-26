@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System; 
 using System.Net;
 using System.Text.Json;
 using Microsoft.AspNetCore.Builder;
@@ -10,7 +9,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.Extensions.Hosting; 
 using Microsoft.OpenApi.Models;
 using ValueApp.Exceptions;
 using ValueApp.Services;
@@ -48,7 +47,7 @@ namespace ValueApp
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
