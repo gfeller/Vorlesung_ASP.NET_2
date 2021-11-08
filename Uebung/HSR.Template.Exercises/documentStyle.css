@@ -17,7 +17,7 @@ body {
 /* headings */
 h1 {
 	color: white;
-	background: rgb(0, 96, 160);
+	background: #8C195F;
 	padding: 1rem;
 	margin: -1rem -1rem 1rem -1rem;
 
@@ -131,17 +131,11 @@ ul, ol {
 ul {
 	list-style-type: circle;
 }
-ol {
-	list-style: upper-alpha;
-}
 ul li, ol li {
 	list-style-position: inside;
 }
-ul ul, ul ol, ol ul, ol ol {
+ul ul, ul ol, ol ul {
 	padding-left: 1rem;
-}
-ol ol {
-	list-style-type: lower-roman;
 }
 li > pre {
 	margin: 0;
@@ -170,9 +164,10 @@ dl dd {
 #showSolutions {
 	float: right;
 	font-size: 1.2rem;
-	background: linear-gradient(lightgreen, green);
+	background: linear-gradient(green, green);
 	padding: 0.5rem 1rem;
 	border: none;
 	border-radius: 2rem;
 	color: white;
+	cursor: pointer;
 }
