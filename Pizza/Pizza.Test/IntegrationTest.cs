@@ -32,7 +32,7 @@ namespace Pizza.Test
         }
 
         [Fact]
-        public async Task<Task> CreateOrder()
+        public async Task CreateOrder()
         {
             var wrongOrder = JsonConvert.SerializeObject(new NewOrderViewModel() {Name = "X"});
             var okOrder = JsonConvert.SerializeObject(new NewOrderViewModel() {Name = "Hawaii"});
@@ -47,13 +47,11 @@ namespace Pizza.Test
             Assert.Equal(HttpStatusCode.Created, result3.StatusCode);
 
             Assert.Equal(1, _sut.Server.Host.Services.GetService<ApplicationDbContext>().Order.Count());
-
-            return Task.CompletedTask;
         }
 
 
         [Fact]
-        public async Task<Task> CreateAndDeleteOrder()
+        public async Task CreateAndDeleteOrder()
         {
             var order = JsonConvert.SerializeObject(new NewOrderViewModel() {Name = "Hawaii"});
 
@@ -69,9 +67,6 @@ namespace Pizza.Test
 
             var result4 = await _sut.Request($"/api/orders/{orderFromServer.Id}", _sut.User1, HttpMethod.Delete, new StringContent(order, Encoding.UTF8, "application/json"));
             Assert.Equal(HttpStatusCode.BadRequest, result4.StatusCode);
-
-
-            return Task.CompletedTask;
         }
     }
 
@@ -92,12 +87,12 @@ namespace Pizza.Test
             Client = factory.CreateClient();
             Server = factory.Server;
 
-            Server.Host.Services.GetService<UserManager<IdentityUser>>().CreateAsync(new IdentityUser {UserName = "admin@admin.ch"}, "123456").Wait();
-            Server.Host.Services.GetService<UserManager<IdentityUser>>().CreateAsync(new IdentityUser() {UserName = "user1@user.ch"}, "123456").Wait();
-            Server.Host.Services.GetService<UserManager<IdentityUser>>().CreateAsync(new IdentityUser() {UserName = "user2@user.ch"}, "123456").Wait();
-            Admin = Server.Host.Services.GetService<SecurityService>().GetToken(new AuthRequest() {Username = "admin@admin.ch", Password = "123456"}).Result;
-            User1 = Server.Host.Services.GetService<SecurityService>().GetToken(new AuthRequest() {Username = "user1@user.ch", Password = "123456"}).Result;
-            User2 = Server.Host.Services.GetService<SecurityService>().GetToken(new AuthRequest() {Username = "user2@user.ch", Password = "123456"}).Result;
+            Server.Host.Services.GetRequiredService<UserManager<IdentityUser>>().CreateAsync(new IdentityUser {UserName = "admin@admin.ch"}, "123456").Wait();
+            Server.Host.Services.GetRequiredService<UserManager<IdentityUser>>().CreateAsync(new IdentityUser() {UserName = "user1@user.ch"}, "123456").Wait();
+            Server.Host.Services.GetRequiredService<UserManager<IdentityUser>>().CreateAsync(new IdentityUser() {UserName = "user2@user.ch"}, "123456").Wait();
+            Admin = Server.Host.Services.GetRequiredService<SecurityService>().GetToken(new AuthRequest() {Username = "admin@admin.ch", Password = "123456"}).Result;
+            User1 = Server.Host.Services.GetRequiredService<SecurityService>().GetToken(new AuthRequest() {Username = "user1@user.ch", Password = "123456"}).Result;
+            User2 = Server.Host.Services.GetRequiredService<SecurityService>().GetToken(new AuthRequest() {Username = "user2@user.ch", Password = "123456"}).Result;
         }
 
 
@@ -115,31 +110,23 @@ namespace Pizza.Test
         }
     }
 
-    public class TestStartup : Startup
+    public class CustomWebApplicationFactory : WebApplicationFactory<Startup>
     {
-        private readonly string _dbId = Guid.NewGuid().ToString(); // WHY?
+        private readonly string _dbId = Guid.NewGuid().ToString();
 
-
-        public TestStartup(IConfiguration config) : base(config)
-        {
-        }
-
-        public override void ConfigureDatabase(IServiceCollection services)
-        {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseInMemoryDatabase(_dbId));
-        }
-    }
-
-    public class CustomWebApplicationFactory : WebApplicationFactory<TestStartup>
-    {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            builder.ConfigureServices(services =>
+            {
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseInMemoryDatabase(_dbId));
+            });
+
             builder.UseEnvironment("TEST");
             builder.ConfigureServices(x => x.AddMvc()
                 .AddRazorPagesOptions(o => o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute())));
 
-            builder.UseStartup<TestStartup>();
+            builder.UseStartup<Startup>();
             base.ConfigureWebHost(builder);
         }
 

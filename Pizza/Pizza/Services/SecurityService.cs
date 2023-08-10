@@ -13,9 +13,9 @@ namespace Pizza.Services
     public class SecurityService
     {
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly TokenAuthOptions _tokenOptions;
+        private readonly StartupExtension.TokenAuthOptions _tokenOptions;
 
-        public SecurityService(UserManager<IdentityUser> userManager, TokenAuthOptions tokenOptions)
+        public SecurityService(UserManager<IdentityUser> userManager, StartupExtension.TokenAuthOptions tokenOptions)
         {
             _userManager = userManager;
             _tokenOptions = tokenOptions;
