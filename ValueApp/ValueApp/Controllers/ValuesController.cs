@@ -28,8 +28,7 @@ namespace ValueApp.Controllers
         {
             return _valueService.Get(id);
         }
-
-        [ProducesResponseType(typeof(Value), 200)]
+        
         [HttpPost]
         public Value Post([FromBody]Value value)
         {
@@ -51,3 +50,15 @@ namespace ValueApp.Controllers
         }
     }
 }
+
+
+/*
+        [ProducesResponseType(typeof(Value), 200)]
+        [HttpPost]
+        public IActionResult Post([FromBody] Value value)
+        {
+
+            value = _valueService.Add(value);
+            return new CreatedAtActionResult("Get", "Values", new { id = value.Id) }, value);
+        }
+*/

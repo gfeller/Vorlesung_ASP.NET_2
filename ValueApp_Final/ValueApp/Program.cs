@@ -20,7 +20,7 @@ builder.Services.AddSwaggerGen(options =>
     options.SwaggerDoc("v1", new OpenApiInfo()
     {
         Version = "v1",
-        Contact = new OpenApiContact() { Email = "mgfeller@hsr.ch", Name = "Michael Gfeller", Url = new Uri("https://github.com/gfeller") },
+        Contact = new OpenApiContact() { Email = "michael.gfeller@ost.ch", Name = "Michael Gfeller", Url = new Uri("https://github.com/gfeller") },
         Description = "Das ist eine Demo",
         Title = "Value Service"
     });

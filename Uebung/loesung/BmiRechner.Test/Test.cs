@@ -59,7 +59,7 @@ namespace BmiRechner.Test
 
         public SUT()
         {
-            var factory = new WebApplicationFactory<Startup>();
+            var factory = new WebApplicationFactory<Program>();
 
             Client = factory.CreateClient();
             Server = factory.Server;

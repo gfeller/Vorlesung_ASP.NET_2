@@ -39,7 +39,7 @@ namespace Pizza.Pages.Order
             }
 
             Order.State = OrderState.Deleted;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return Page();
             
         }

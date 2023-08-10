@@ -1,5 +1,11 @@
-﻿using Microsoft.AspNetCore;
+﻿using System;
+using BmiRechner.Services;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 
 namespace BmiRechner
@@ -8,11 +14,41 @@ namespace BmiRechner
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
-        }
+            var builder = WebApplication.CreateBuilder(args);
+            
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+            builder.Services.AddSession(options => { options.IdleTimeout = TimeSpan.FromMinutes(15); });
+            builder.Services.AddMvc();
+            builder.Services.AddSingleton<IBmiService, BmiService>();
+
+
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+            });
+
+            var app = builder.Build();
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseCookiePolicy();
+
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapRazorPages();
+            });
+
+            app.Run();
+        }
     }
 }

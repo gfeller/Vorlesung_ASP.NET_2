@@ -13,10 +13,6 @@ namespace Pizza
 {
     public class Startup
     {
-        private RsaSecurityKey _key;
-        const string TokenAudience = "self";
-        const string TokenIssuer = "pizza";
-
 
         public Startup(IConfiguration configuration)
         {
@@ -52,7 +48,6 @@ namespace Pizza
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
             app.ConfigureDev(env);
 
             app.UseExceptionHandler(StartupExtension.ConfigureExceptionHandler);
@@ -65,9 +60,7 @@ namespace Pizza
 
 
             app.UseSession(new SessionOptions() { IdleTimeout = TimeSpan.FromMinutes(30) });
-            app.UseRouting();
-
-
+         
             app.UseRouting();
 
             app.UseAuthentication();

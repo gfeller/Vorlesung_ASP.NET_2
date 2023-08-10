@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace ValueApp.Services
 {
     
-    public class Value : RestRessource
+    public class Value
     {
+        public int Id { get; set; }
+
         [Required]
         [StringLength(50, MinimumLength = 10)]
         public string Content { get; set; }

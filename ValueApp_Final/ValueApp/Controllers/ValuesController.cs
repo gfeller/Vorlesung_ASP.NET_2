@@ -24,12 +24,7 @@ namespace ValueApp.Controllers
         [HttpGet]
         public IEnumerable<Value> Get()
         {
-            return _valueService.All().Select(x =>
-            {
-                x.AddSelfLink(_uriHelper, "get", "Values");
-                x.AddLink(_uriHelper, "delete", "Values", "del", new { id = x.Id });
-                return x;
-            });
+            return _valueService.All();
         }
 
 
@@ -44,8 +39,6 @@ namespace ValueApp.Controllers
         public IActionResult Post([FromBody] NewValueViewModel newValue)
         {
             Value value = _valueService.Add(new Value() {Content = newValue.Content});
-            value.AddSelfLink(_uriHelper, "get", "Values");
-            value.AddLink(_uriHelper, "delete", "Values", "del", new {id = value.Id});
             return new CreatedAtActionResult("Get", "Values", new {id = value.Id}, value);
         }
 

@@ -83,7 +83,7 @@ namespace Pizza.Test
         public SUT()
         {
             var factory = new CustomWebApplicationFactory();
-
+            
             Client = factory.CreateClient();
             Server = factory.Server;
 

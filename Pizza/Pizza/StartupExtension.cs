@@ -105,7 +105,7 @@ public static class StartupExtension
             options.AddPolicy("Founders", policy =>
             {
                 policy.RequireAuthenticatedUser();
-                policy.RequireClaim(ClaimTypes.Name, "mgfeller@hsr.ch", "sgehrig@hsr.ch", "mstolze@hsr.ch");
+                policy.RequireClaim(ClaimTypes.Name, "michael.gfeller@ost.ch", "markus.stolze@ost.ch");
             });
 
             options.AddPolicy("ElevatedRights", policy =>
